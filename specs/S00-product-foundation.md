@@ -4,7 +4,7 @@
 Establish the repository and product contract before implementation begins.
 
 ## Status
-Baseline prepared.
+Complete — owner-approved baseline.
 
 ## Inputs
 - README.md
@@ -59,13 +59,9 @@ Baseline prepared.
 - [x] Roadmap exists.
 - [x] AGENTS.md exists.
 - [x] S01 defines measurable engine selection.
-- [ ] Owner review confirms the baseline.
+- [x] Owner review confirms the baseline.
 
-## Owner review checklist
-Review only for incorrect product direction, not wording perfection:
-- Does the game fantasy match the intended idea?
-- Is Noxygen branding present at the desired level?
-- Is anything important accidentally excluded from the roadmap?
-- Are any fixed decisions actually still uncertain?
+## Owner review result
+Approved on 2026-09-30.
 
-When approved, mark S00 complete and proceed to S01.
+Proceed to S01.
