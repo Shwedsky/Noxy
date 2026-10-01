@@ -51,5 +51,11 @@ Run -> earn -> upgrade/unlock -> customize -> complete missions -> run again.
 - `specs/S01-engine-spike.md` — engine/Telegram technical spike.
 - `AGENTS.md` — working rules for Codex/AI agents.
 
+## Codex development setup
+Read [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md) for setup, skills, verification and the S01 starting prompt.
+
+Use Node 24 LTS and run `node tools/setup.mjs` from the repository root.
+The foundation gate works now; runtime gates become available with S01.
+
 ## Development principle
 Do not build the whole game at once. Work in narrow specifications and preserve a playable vertical slice. Architecture may evolve after evidence from the engine spike and device tests.

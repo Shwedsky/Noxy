@@ -15,6 +15,12 @@ Preferred cycle:
 5. adjust later specs;
 6. continue.
 
+Implementation and review follow [DEVELOPMENT.md](DEVELOPMENT.md).
+Use targeted prototype checks inside a phase; use broader milestone checks at
+Gates A–F. Explicit batches may contain 2–3 adjacent specs without requiring
+separate PRs for each. The internal core prototype is not the first public release.
+Required unavailable evidence stays UNVERIFIED; documenting it is not a gate PASS.
+
 ## Phase 0 — Pre-production
 ### S00 — Product Foundation
 Lock product baseline, non-goals, quality bar, technical constraints and project working rules.

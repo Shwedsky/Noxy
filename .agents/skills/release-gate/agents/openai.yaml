@@ -1,0 +1,4 @@
+interface:
+  display_name: "Release Gate"
+  short_description: "Verify a Noxy milestone or release candidate"
+  default_prompt: "Use $release-gate to verify the requested Noxy milestone and list missing evidence."

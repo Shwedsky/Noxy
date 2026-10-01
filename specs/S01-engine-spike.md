@@ -156,3 +156,15 @@ Stop and report instead of papering over the problem if:
 - performance is below the minimum quality bar after basic sane optimization.
 
 A failed candidate is valid spike evidence.
+
+## Development tooling deliverables
+Follow docs/DEVELOPMENT.md and use the repo game-spec workflow.
+- Add a root npm workspace/package-lock.json covering both spike candidates.
+- Pin browser test tooling and implement production-preview smoke scenarios for both.
+- Register real prototype and milestone commands in tools/verification.json.
+- Record AC evidence in docs/evidence/S01-engine-spike.md, including build/device
+  metadata, exact commands, comparison measurements and independent review.
+- Desktop/emulated evidence must not be labelled as a physical phone test.
+- With no real mobile/Telegram access, record a provisional recommendation and
+  the missing evidence; Gate A remains unverified. Do not claim final selection
+  or proceed into S02 without an explicit owner decision to accept that risk.
