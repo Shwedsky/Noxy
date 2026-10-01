@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Review"
+  short_description: "Review Noxy changes against acceptance evidence"
+  default_prompt: "Use $game-review to review the active Noxy branch against its base and spec."

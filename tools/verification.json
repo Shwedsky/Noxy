@@ -1,0 +1,27 @@
+{
+  "version": 1,
+  "profiles": {
+    "foundation": [
+      {
+        "id": "repository-contract",
+        "command": [
+          "node",
+          "tools/check-foundation.mjs"
+        ],
+        "timeoutSeconds": 60
+      },
+      {
+        "id": "verification-runner-tests",
+        "command": [
+          "node",
+          "--test",
+          "tools/tests/verify.test.mjs"
+        ],
+        "timeoutSeconds": 60
+      }
+    ],
+    "prototype": [],
+    "milestone": [],
+    "release": []
+  }
+}

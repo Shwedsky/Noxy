@@ -1,0 +1,4 @@
+interface:
+  display_name: "Game Spec"
+  short_description: "Implement one bounded Noxy gameplay slice"
+  default_prompt: "Use $game-spec to implement the active Noxy spec with runtime evidence."
