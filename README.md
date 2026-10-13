@@ -1,20 +1,21 @@
 # NOXY: Победи Лень
 
-Telegram Mini App game for Noxygen.
+Browser-first 3D runner for Noxygen, designed to be embedded into Telegram later as the same web build.
 
 ## Product
-NOXY: Победи Лень is a portrait 3D endless runner with meta-progression, cosmetics, missions, social competition and a humorous core fantasy: at first the player runs away from Laziness, but during special events and boss sequences Laziness has to run away from the player.
+NOXY: Победи Лень is a portrait 3D endless runner with meta-progression, cosmetics, missions and a humorous core fantasy: at first the player runs away from Laziness, but during special events and boss sequences Laziness has to run away from the player.
 
 Subway Surfers is only a mechanical reference for readable mobile lane-running. The project is not intended to be a clone.
 
 ## Current status
-Pre-production / foundation.
+Pre-production / technical foundation.
 
 ## Fixed baseline
-- Platform: Telegram Mini App launched from the existing Noxygen bot.
+- Runtime: browser-first web game.
+- Telegram: later container/integration target, not a dependency for core development.
 - Orientation: portrait 9:16.
 - Visual direction: stylized 3D.
-- Audience: existing Noxygen customers + new audience; launch priority is the current Telegram audience.
+- Audience: existing Noxygen customers + new audience.
 - Characters: male and female from the first playable release.
 - Input: swipe controls.
 - Main mode: Endless.
@@ -26,8 +27,8 @@ Pre-production / foundation.
 - Energy/stamina: none.
 - Rewards: in-game only at launch.
 - Language: RU first; localization-ready architecture.
-- Connectivity: online account/sync required; short connection loss during a run must not destroy the run.
-- Progress: server authoritative for valuable account state.
+- Persistence v1: local-first browser persistence behind a SaveProvider abstraction.
+- Backend: explicitly deferred until cloud sync/social/real rewards/monetization justify it.
 - Tone: humorous, self-ironic, deliberately absurd where it improves memorability.
 
 ## Core loop
@@ -41,15 +42,16 @@ Run -> earn -> upgrade/unlock -> customize -> complete missions -> run again.
 - Boss Run reverses the chase: the player hunts Laziness.
 - Hub progression visually evolves from a lazy starting space toward an advanced NOXY training/lab space.
 - Cosmetics and perks provide long-term collection and build variety.
-- Daily/weekly missions, achievements, leaderboards and friend challenges create retention.
 
 ## Documentation
 - `docs/GDD.md` — product/game design baseline.
-- `docs/ARCHITECTURE.md` — technical principles and target architecture.
+- `docs/ARCHITECTURE.md` — browser-first/local-first technical baseline.
 - `docs/ROADMAP.md` — staged delivery plan.
-- `specs/S00-product-foundation.md` — pre-production specification.
-- `specs/S01-engine-spike.md` — engine/Telegram technical spike.
+- `docs/TOOLING.md` — required and optional developer tools.
+- `docs/DELIVERY_OWNERSHIP.md` — who does what and when.
+- `specs/S00-product-foundation.md` — approved product foundation.
+- `specs/S01-engine-spike.md` — browser/mobile engine spike.
 - `AGENTS.md` — working rules for Codex/AI agents.
 
 ## Development principle
-Do not build the whole game at once. Work in narrow specifications and preserve a playable vertical slice. Architecture may evolve after evidence from the engine spike and device tests.
+Do not build the whole game at once. Preserve a playable vertical slice, keep the first architecture local-only, and add Telegram/backend capabilities only when the product actually needs them.
