@@ -1,158 +1,153 @@
-# S01 — Telegram 3D Engine Spike
+# S01 — Browser 3D Engine Spike
 
 ## Goal
-Select the production client engine using a real portrait mobile Telegram/web prototype and measured evidence.
+Select the production client engine for a portrait mobile browser game using equivalent prototypes and measured evidence.
 
-Do not choose the engine based on familiarity or preference alone.
+Telegram Mini App compatibility is a later integration concern and a secondary compatibility check, not a reason to complicate the spike.
 
 ## Why this spec exists
-The target is a stylized 3D mobile runner inside Telegram Mini Apps.
+The target is a stylized 3D mobile runner that first ships as a normal web game and later runs inside Telegram using the same build.
 
-The main technical risk is not whether a browser can render 3D. It is whether the complete experience can:
-- launch quickly enough;
-- sustain acceptable FPS;
-- handle touch input reliably;
-- fit Telegram WebView constraints;
-- avoid an excessive bundle;
-- support fast content iteration.
+Main risks:
+- startup payload;
+- mobile FPS/frame stability;
+- swipe input feel;
+- asset/animation workflow;
+- static deployment simplicity;
+- maintainability for AI-assisted development.
 
-## Candidate set
-At minimum evaluate:
+## Mandatory candidates
 1. Babylon.js.
-2. Three.js plus only the minimum gameplay/application tooling required.
+2. Three.js plus only the minimal supporting tooling required.
 
-Unity WebGL may be included only as an optional comparison if the local environment can produce a representative build without disproportionate setup effort.
-
-Do not delay the mandatory web-native comparison because Unity tooling is unavailable.
+Unity WebGL is out of scope for this spike unless both web-native candidates fail a concrete requirement.
 
 ## Equivalent prototype requirements
-Each mandatory candidate must implement the same minimal scene.
+Each candidate must implement the same minimum scene.
 
 ### Scene
-- portrait 9:16 layout;
-- one simple stylized runner placeholder;
+- portrait 9:16;
+- simple runner placeholder;
 - third-person follow camera;
 - 3 lanes;
 - repeating/recycled road;
-- at least 20 visible/recycled environment or obstacle objects during representative play;
-- basic light/material setup;
-- placeholder background/environment.
+- at least 20 visible/recycled environment or obstacle objects;
+- basic lighting/materials;
+- simple placeholder background/environment.
 
 ### Input
-- swipe left/right changes lane;
-- swipe up jumps;
-- swipe down performs slide/crouch placeholder behavior.
+- swipe left/right -> lane change;
+- swipe up -> jump;
+- swipe down -> slide/crouch placeholder.
+
+Desktop keyboard controls may exist only as a development convenience.
 
 ### Runtime
-- automatic forward motion;
+- automatic forward movement;
 - lane interpolation;
 - jump state;
-- collision-ready simple obstacles;
-- continuous play for at least several minutes;
+- simple collision-ready obstacles;
+- several minutes of continuous play;
 - no unbounded object creation.
 
-### Telegram shell
-If practical in the local environment:
-- launch inside a minimal Telegram Mini App integration page;
-- call Telegram WebApp readiness APIs;
-- handle portrait/safe-area sizing.
-
-If an actual Telegram bot launch cannot be exercised locally, document exact production validation steps and test the same build in an equivalent mobile WebView/browser.
+### Build
+Each candidate must:
+- run locally with a simple documented command;
+- produce a production static build;
+- be deployable without an application server.
 
 ## Measurements
 Record for each candidate:
 - production JS/WASM bundle size;
-- total initial transfer size with the spike assets;
+- total initial transfer size with spike assets;
 - cold load to first rendered frame;
 - time to interactive;
 - steady FPS;
 - notable frame spikes;
-- approximate memory use where tooling permits;
-- mobile input correctness;
-- resize/orientation behavior;
-- dev experience;
+- approximate memory behavior where tooling permits;
+- swipe correctness/latency;
+- resize/portrait behavior;
+- development ergonomics;
 - asset pipeline friction;
-- debugging quality;
-- Telegram integration friction.
+- debugging/profiling quality;
+- testability;
+- static deployment friction;
+- expected later Telegram WebView friction.
 
-## Device/browser matrix
-Test as much as locally available.
+## Test matrix
+Minimum:
+- desktop Chrome;
+- responsive/device emulation;
+- one real Android/mobile browser if accessible to the owner.
 
-Minimum evidence:
-- desktop Chrome dev run;
-- one real Android device OR clearly documented remote/device result;
-- one iOS/Safari class test if available.
+Optional:
+- iOS/Safari class test if available;
+- Telegram WebView smoke test only if it is trivial to exercise.
 
-If a required physical platform is unavailable, state that limitation and do not pretend it passed.
+Unavailable physical platforms must be reported as untested.
 
-## Performance quality bar
-Initial target:
-- 60 FPS preferred on capable devices;
+## Initial quality bar
+- 60 FPS preferred on capable hardware;
 - stable 30 FPS minimum on representative weaker hardware;
 - no progressive memory growth during a several-minute run;
-- no visible input latency that makes lane changes feel unreliable.
-
-S01 may propose more specific budgets after measurement.
+- no obvious input latency;
+- production output suitable for static HTTPS hosting.
 
 ## Evaluation dimensions
-Score each candidate in written analysis, but do not pick a winner before measurement.
-
-Evaluate:
 - mobile performance;
 - startup/payload;
-- Telegram compatibility;
 - 3D ergonomics;
 - animation support;
 - asset pipeline;
 - input handling;
 - profiling/debugging;
 - testability;
-- AI/Codex maintainability;
-- community/library maturity;
-- complexity added to the repository.
+- Codex maintainability;
+- ecosystem maturity;
+- static hosting simplicity;
+- later Telegram integration risk.
 
 ## Required deliverables
-1. Spike source for mandatory candidates.
-2. Reproducible build/run commands.
+1. Source for both mandatory candidates.
+2. Reproducible install/dev/build commands.
 3. Measurement notes.
 4. Comparison document.
-5. Architecture Decision Record:
+5. ADR with:
    - chosen engine;
-   - rejected alternatives;
+   - rejected alternative;
    - evidence;
    - known risks;
    - revisit conditions.
-6. Proposed final apps/game folder structure.
+6. Proposed `apps/game` structure for S02.
+7. Exact owner mobile-test instructions.
 
 ## Non-goals
 - polished art;
 - real Noxygen assets;
-- backend;
-- auth;
-- account persistence;
+- backend/API/database;
+- Telegram authentication;
+- cloud persistence;
+- economy;
 - full procedural generation;
 - Laziness AI;
-- economy;
-- production animation system;
-- complete obstacle design.
+- production animation system.
 
 ## Acceptance criteria
 - [ ] Babylon.js prototype completed.
 - [ ] Three.js prototype completed.
-- [ ] Both use functionally equivalent scenes/input.
+- [ ] Functionally equivalent scenes/input.
 - [ ] Production builds measured.
-- [ ] At least one real mobile environment tested, if accessible.
-- [ ] Telegram/WebView constraints documented.
+- [ ] Static build confirmed.
+- [ ] Mobile test instructions supplied.
+- [ ] At least one real mobile test completed if owner environment is available.
 - [ ] Performance differences documented.
-- [ ] Engine choice recorded in an ADR.
-- [ ] No final engine choice is made without evidence.
-- [ ] S02 recommendations updated based on the result.
+- [ ] Engine choice recorded in ADR.
+- [ ] S02 recommendation documented.
 
 ## Stop conditions
-Stop and report instead of papering over the problem if:
-- candidate cannot produce a working mobile build;
-- dependency/toolchain is unsupported in the environment;
-- Telegram integration exposes a major incompatibility;
-- performance is below the minimum quality bar after basic sane optimization.
+Stop and report if:
+- a candidate cannot produce a normal static production build;
+- toolchain is unsupported in the available environment;
+- mobile performance remains below the minimum quality bar after basic sane optimization.
 
 A failed candidate is valid spike evidence.

@@ -1,136 +1,103 @@
-# Architecture Baseline — v0.1
+# Architecture Baseline — v0.2
 
 ## 1. Status
-This document defines target principles, not a final technology lock.
+The project is browser-first and local-first.
 
-The engine must be selected after S01 Engine Spike using measured evidence on Telegram/mobile.
+The production engine is still selected only after S01 using measured evidence on mobile browsers. Telegram is a later integration layer, not the foundation of the client architecture. Backend services are deferred until they provide clear product value.
 
 ## 2. High-level shape
 
-Existing Telegram Bot
-    |
-    +-- menu button / Mini App launch
-            |
-            v
-    Telegram Mini App
-            |
-            +-- Game client
-            |
-            +-- API
-                    |
-                    +-- player/profile
-                    +-- run submission
-                    +-- inventory/economy
-                    +-- progression
-                    +-- missions
-                    +-- leaderboard
-                    |
-                    v
-                PostgreSQL
+Phase 1 / local-first:
 
-Optional supporting services may be introduced only when justified.
+Browser
+  |
+  v
+NOXY Web Game
+  |
+  +-- gameplay
+  +-- UI/audio/VFX
+  +-- IndexedDB/local persistence
+  +-- platform adapters
 
-## 3. Core architecture principles
-1. Mobile-first and Telegram-first.
-2. Keep launch payload small enough for acceptable mobile startup.
-3. Separate gameplay simulation from account/progression state.
-4. Server is authoritative for valuable persistent state.
-5. Client may remain authoritative for moment-to-moment runner simulation in v1.
-6. Do not hard-wire the runner to only Endless mode.
-7. Keep content data-driven where practical:
-   - obstacles;
-   - power-ups;
-   - cosmetics;
-   - missions;
-   - localization;
-   - economy tuning.
-8. Avoid premature microservices.
-9. Preserve deterministic-enough gameplay rules for testing, but do not require full lockstep simulation.
-10. Performance budgets are product requirements, not late optimization tasks.
+Later Telegram integration:
 
-## 4. Client responsibilities
-- rendering;
-- input;
-- runner simulation;
-- camera;
-- local effects/audio;
-- procedural track presentation;
-- temporary run state;
-- local settings;
-- retry buffering if network briefly disappears;
-- localization rendering;
-- UI.
+Telegram Bot -> Telegram Mini App WebView -> same NOXY Web Game
 
-## 5. Server responsibilities
-- Telegram identity verification;
-- player profile;
-- authoritative wallet balances;
-- inventory;
-- cosmetics ownership;
-- hub/progression state;
-- mission progression;
-- achievements;
-- leaderboard;
-- run acceptance/rejection;
-- suspicious-result checks;
-- version compatibility rules.
+Later online services, only when justified:
 
-## 6. Telegram identity
-Never trust client-provided Telegram identity fields directly.
+NOXY Web Game -> optional API -> cloud save / leaderboard / social / payments
 
-Expected flow:
-1. Mini App receives Telegram init data.
-2. Client sends raw init data to backend.
-3. Backend validates Telegram signature/hash using the official validation algorithm.
-4. Backend establishes application session for the validated Telegram user.
+## 3. Core principles
+1. Browser-first, mobile-first.
+2. The game must run as a normal HTTPS web application without Telegram.
+3. Telegram-specific code lives behind a platform adapter.
+4. Local persistence is sufficient for the first playable/release candidate unless requirements change.
+5. No backend, database, auth or anti-cheat is created before a feature requires it.
+6. The runner core must not depend on persistence or platform APIs.
+7. Do not hard-wire the runner to only Endless mode.
+8. Keep content data-driven where practical: obstacles, power-ups, cosmetics, missions, localization and tuning.
+9. Avoid speculative infrastructure and premature microservices.
+10. Mobile performance and startup size are functional requirements.
 
-Do not persist or trust identity based solely on initDataUnsafe.
+## 4. Platform abstraction
+The client should expose small interfaces such as:
+- `IPlatform`
+- `ISaveProvider`
+- `IShareProvider`
+- `IHapticsProvider`
 
-## 7. Persistence split
-### Server authoritative
+Initial implementations:
+- BrowserPlatform
+- BrowserSaveProvider
+
+Later implementations may include:
+- TelegramPlatform
+- TelegramShareProvider
+- ServerSaveProvider
+
+Gameplay code must not directly depend on `window.Telegram` or a future API.
+
+## 5. Persistence v1
+Primary persistence: IndexedDB.
+
+Use localStorage only for tiny non-critical settings when appropriate.
+
+Persist at minimum when systems exist:
 - currencies;
-- owned cosmetics;
+- unlocked cosmetics;
+- equipped cosmetics;
 - progression;
 - achievements;
 - mission state;
-- leaderboard records;
-- rewarded unlocks.
+- hub state;
+- local records;
+- settings.
 
-### Local/device
-- graphics settings;
-- sound/vibration settings;
-- cached config;
-- tutorial presentation flags where non-critical;
-- temporary run recovery buffer.
+Requirements:
+- versioned save schema;
+- safe migration path;
+- corruption fallback/reset path;
+- writes centralized through SaveProvider;
+- no gameplay module writes directly to IndexedDB.
 
-## 8. Networking
-A run should not depend on a continuous network connection after it starts.
+Local saves are intentionally user-controlled and are not cheat-resistant. That is acceptable before competitive/real-value systems exist.
 
-Suggested lifecycle:
-1. client requests/creates run_id;
-2. run proceeds locally;
-3. telemetry/run summary accumulates;
-4. if network is available, optional light heartbeats may be sent;
-5. run result is submitted at completion;
-6. server validates plausibility and applies rewards atomically;
-7. duplicate submission with same run_id is idempotent.
+## 6. Deferred online services
+Backend becomes justified when one or more of these become real requirements:
+- cross-device cloud saves;
+- global or trusted leaderboards;
+- friend challenges requiring server validation;
+- real-world rewards;
+- paid items / Telegram Stars;
+- abuse-resistant economy;
+- analytics that cannot be handled client-side.
 
-## 9. Run result validation
-Initial validation can include:
-- duration >= minimum plausible duration;
-- distance <= speed envelope;
-- currency <= plausible pickup/reward envelope;
-- event/power-up combinations valid for game version;
-- run_id not already rewarded;
-- timestamps sane;
-- client version supported.
+Until then, backend work is out of scope.
 
-Do not over-engineer anti-cheat before the game has abuse worth protecting.
-
-## 10. Modes
+## 7. Modes
 Introduce a mode abstraction early.
 
-Example conceptual interface:
+Conceptual responsibilities:
 - mode id;
 - start conditions;
 - completion/failure conditions;
@@ -138,73 +105,76 @@ Example conceptual interface:
 - reward policy;
 - track/event policy.
 
-Initial implementation only needs Endless.
+Initial implementation: Endless.
 
-Future modes:
-- Sprint;
-- Race;
+Future candidates:
+- Sprint / Race;
 - Time Attack;
 - Challenge Run;
 - Boss Hunt.
 
-## 11. Data-driven content
-Prefer structured content definitions instead of scattered constants.
+## 8. Data-driven content
+Prefer structured definitions instead of scattered constants.
 
 Candidate config domains:
 - obstacle catalog;
 - spawn weights;
 - biome segments;
 - power-ups;
-- perk definitions;
-- cosmetic catalog;
+- perks;
+- cosmetics;
 - missions;
 - localization;
 - economy;
 - progression thresholds.
 
-Exact format depends on chosen engine/tooling.
+Exact representation depends on the chosen engine/tooling.
 
-## 12. Localization
-All user-facing strings should be keyed.
+## 9. Localization
+Initial locale: `ru-RU`.
 
-Initial locale:
-- ru-RU.
+User-facing text should use localization keys. English and other locales can be added without rewriting gameplay code.
 
-Architecture must allow later locale bundles without rewriting gameplay code.
-
-## 13. Engine decision
-Do not choose by preference alone.
-
-Candidates may include:
+## 10. Engine decision
+Mandatory S01 comparison:
 - Babylon.js;
-- Three.js + game framework;
-- other web-native 3D engines;
-- Unity WebGL only if Telegram/mobile measurements justify its payload and runtime cost.
+- Three.js with only minimal supporting tooling.
 
-The final choice is made in S01.
+Unity WebGL is no longer a required candidate. It may be investigated later only if web-native engines fail a concrete requirement.
 
-## 14. Performance baseline
-S01 must establish measurable budgets.
+Selection criteria:
+- mobile browser performance;
+- startup payload;
+- 3D/gameplay ergonomics;
+- animation/asset pipeline;
+- swipe/input behavior;
+- profiling/debugging;
+- testability;
+- Codex maintainability;
+- deployability to static hosting;
+- later Telegram WebView compatibility.
 
-At minimum test:
-- launch time;
-- first interactive time;
-- memory use;
+## 11. Performance baseline
+S01 establishes measured budgets.
+
+At minimum measure:
+- production bundle/initial transfer size;
+- cold load to first rendered frame;
+- time to interactive;
 - steady FPS;
-- frame-time spikes;
-- thermal behavior where observable;
-- payload size;
-- asset streaming/loading behavior.
+- frame spikes;
+- memory behavior where practical;
+- touch input correctness;
+- resize/safe-area behavior.
 
-Target classes:
-- modern iPhone;
-- modern mid-range Android;
-- weaker Android representative of the intended audience.
+Initial quality target:
+- 60 FPS preferred on capable devices;
+- stable 30 FPS minimum on representative weaker hardware;
+- no progressive memory growth during a several-minute run;
+- no obvious swipe/input latency.
 
-Exact numerical acceptance limits may be adjusted after the spike, but stable 30 FPS is the minimum acceptable gameplay target and 60 FPS is preferred on capable devices.
-
-## 15. Repository direction
-Target monorepo shape after engine selection:
+## 12. Repository direction
+Target after S01:
 
 /
   AGENTS.md
@@ -213,42 +183,36 @@ Target monorepo shape after engine selection:
   specs/
   apps/
     game/
-    api/
-  packages/
-    shared/
-    config/
-  infra/
   tools/
 
-Do not create empty architecture for its own sake. S01 may revise this layout.
+Do not create `api/`, `infra/`, database or container scaffolding until an approved spec requires it.
 
-## 16. Security baseline
-- no bot secrets in client bundle;
-- no database credentials in client;
-- validate Telegram init data server-side;
-- rate-limit relevant API endpoints;
-- server-side authorization on every account mutation;
-- idempotent reward writes;
-- do not trust client-provided prices/reward amounts;
-- environment-specific secrets excluded from git.
+## 13. Hosting
+The client must produce a static production build deployable to ordinary HTTPS static hosting such as GitHub Pages, Cloudflare Pages, Vercel or equivalent.
 
-## 17. Observability
-Not needed in full during S01, but production architecture should support:
-- structured API logs;
-- client error reporting;
-- run acceptance/rejection reason metrics;
-- startup/performance telemetry;
-- crash/error counters.
+Hosting vendor is not a hard architectural dependency.
 
-## 18. Testing direction
-Automate what is stable:
-- pure gameplay rules;
+## 14. Security baseline
+For the local-first phase:
+- never commit secrets;
+- no bot token in client code;
+- no future API secrets in client code;
+- treat browser saves as editable by the user;
+- do not promise competitive integrity without backend validation.
+
+Telegram identity validation becomes relevant only when a backend is introduced.
+
+## 15. Testing direction
+Automate stable logic:
+- gameplay math/rules;
 - config validation;
-- backend reward logic;
-- Telegram auth verification;
-- idempotency;
-- API contracts.
+- save serialization/migrations;
+- mode rules;
+- deterministic utility code.
 
-Do not fake confidence with brittle screenshot-only tests for fast-changing 3D visuals.
-
-Manual device playtesting remains mandatory for feel and performance.
+Manual testing remains mandatory for:
+- game feel;
+- mobile performance;
+- swipe behavior;
+- visual readability;
+- Telegram WebView integration later.

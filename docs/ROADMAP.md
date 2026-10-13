@@ -1,178 +1,162 @@
-# Development Roadmap
+# Development Roadmap — browser-first v0.2
 
 ## Working model
-The roadmap is stable at the phase level.
+The roadmap is stable at phase level. Detailed specs are prepared only a few steps ahead.
 
-Detailed specifications are written only a few steps ahead.
+Default ownership:
+- ChatGPT: planning, specs, repository/docs changes, reviews, small/config changes, Git workflow and merge decisions.
+- Codex: implementation-heavy coding, engine/runtime changes, repetitive code changes, local build/test work that requires a development checkout.
+- Owner: installs tools, launches builds on real devices, judges game feel/visual quality, supplies credentials/assets only when required.
 
-Do not fully specify S00-S37 in implementation detail up front.
-
-Preferred cycle:
-1. prepare 2-3 upcoming specs;
-2. implement;
-3. test;
-4. review architecture/game feel;
-5. adjust later specs;
-6. continue.
-
-## Phase 0 — Pre-production
+## Phase 0 — Foundation
 ### S00 — Product Foundation
-Lock product baseline, non-goals, quality bar, technical constraints and project working rules.
+Complete.
 
-### S01 — Engine Spike
-Build equivalent minimum 3D Telegram/mobile prototypes and select the production engine using measurements.
+### S01 — Browser 3D Engine Spike
+Compare Babylon.js vs Three.js using equivalent portrait mobile browser prototypes. Telegram compatibility is a secondary check, not a blocker for core browser development.
 
-Exit: written ADR/decision with evidence.
+Exit: evidence-backed engine ADR and proposed game folder structure.
+
+### S02 — Browser Project Foundation
+Create the chosen engine project, static production build, local dev workflow, basic test/lint/typecheck and platform/save abstractions.
+
+Exit: `pnpm dev` launches the game shell; `pnpm build` produces static deployable output.
 
 ## Phase 1 — Playable Core
-### S02 — Endless Track
-Track segmentation, recycling/object pooling, initial procedural generation.
-
 ### S03 — Player Controller
-Swipe input, lane changes, jump, slide, camera integration.
+Swipe input, lane changes, jump, slide, camera.
 
-### S04 — Laziness Pursuit
+### S04 — Endless Track
+Track segmentation, recycling/pooling and initial procedural generation.
+
+### S05 — Obstacles & Fairness
+Obstacle taxonomy, collision rules and solvable spawn constraints.
+
+### S06 — Laziness Pursuit
 Visible pursuer, pursuit states, mistake reactions, caught/game-over flow.
 
-### S05 — Obstacles
-Obstacle taxonomy, spawn rules, collision rules, fairness constraints.
+### S07 — Run Loop
+Distance, score, speed progression, restart and local run records.
 
-### S06 — Score Run
-Distance, score, speed progression, run state, restart loop.
-
-Exit: game exists and is repeatedly playable.
+Exit: repeatedly playable browser game on desktop and real mobile.
 
 ## Phase 2 — Fun Layer
-### S07 — NX Collectibles
-Common currency pickups and run collection feedback.
-
-### S08 — Power-ups
+### S08 — NX Collectibles
+### S09 — Power-ups
 Turbo, Shield, Magnet, Super Jump, Focus, Rage.
+### S10 — Near Miss / Combo
+### S11 — Random Events
+### S12 — Boss Run
 
-### S09 — Near Miss / Combo
-Risk/reward proximity scoring and combo chain.
+Exit: game has a distinctive NOXY/Laziness identity rather than feeling like a reskin.
 
-### S10 — Random Events
-Initial event framework and selected events.
-
-### S11 — Boss Run
-Chase reversal sequence and boss reward flow.
-
-Exit: gameplay should feel meaningfully differentiated from a generic runner.
-
-## Phase 3 — Player Account
-### S12 — Telegram Identity
-Mini App launch/auth validation and application session.
-
-### S13 — Backend Foundation
-Player/profile/run APIs and PostgreSQL base schema.
-
-### S14 — Persistence
-Authoritative progression state, run result idempotency, basic plausibility checks.
-
-Exit: player can close and return without losing account progression.
-
-## Phase 4 — Progression
+## Phase 3 — Local Progression
+### S13 — Local Persistence
+Versioned IndexedDB SaveProvider, migrations and reset/recovery path.
+### S14 — Player Progression
 ### S15 — Hub
-First visual hub and upgrade states.
+### S16 — Perks
+### S17 — Cosmetics
+### S18 — Inventory/Profile UI
 
-### S16 — Levels / Progression
-Player/account progression model.
+Exit: local browser progress survives reload/restart and creates a reason to return.
 
-### S17 — Perks
-Unlock/equip/use behavior-changing perks.
+## Phase 4 — Retention Without Backend
+### S19 — Daily/Weekly Local Missions
+### S20 — Achievements
+### S21 — Daily Reward
+### S22 — Local Records / Shareable Result Card
 
-### S18 — Cosmetics
-Catalog, ownership and equip flow.
+No trusted global leaderboard is promised in this phase.
 
-### S19 — Inventory
-Unified inventory/profile presentation as needed.
+## Phase 5 — Production Content
+### S23 — First Full Moscow Biome
+### S24 — Character M/F Production Pass
+### S25 — Noxygen Brand/Power-up Art Pass
+### S26 — Night/Environment Variant
+### S27 — Sound / VFX / Juice
 
-Exit: there is a long-term reason to return beyond score chasing.
+## Phase 6 — Browser Release Quality
+### S28 — Performance Hardening
+### S29 — Mobile Compatibility
+### S30 — PWA/Installability Review if useful
+### S31 — Static Hosting / Preview Deployment
+### S32 — Closed Browser Beta
+### S33 — Browser Release Candidate
 
-## Phase 5 — Retention / Social
-### S20 — Daily Missions
-### S21 — Weekly Missions
-### S22 — Achievements
-### S23 — Daily Reward
-### S24 — Leaderboards
-### S25 — Friend Challenge
+Exit: a standalone web game can be shared by URL and played on supported phones.
 
-Exit: recurring goals and social loops exist.
+## Phase 7 — Telegram Integration
+Only after the browser build is worth distributing.
 
-## Phase 6 — Content
-### S26 — Moscow / First Full Biome
-Production-quality primary environment.
+### S34 — Telegram Platform Adapter
+Fullscreen, safe areas, back behavior, haptics and user context where useful.
+### S35 — Existing Bot Launch Integration
+Menu button -> same hosted web build.
+### S36 — Telegram Device Compatibility
+### S37 — Telegram Release Candidate
 
-### S27 — Night Variant
-Lighting/content variant without requiring a wholly new game.
+## Deferred Online Services Phase
+This is not part of the initial implementation path.
 
-### S28 — Additional Biome Candidate
-Gym / office / other environment based on playtest value.
+Trigger only when product value justifies it:
+- cloud saves / cross-device sync;
+- trusted global/friend leaderboards;
+- validated competitions;
+- real-world rewards;
+- payments / Telegram Stars;
+- server analytics or abuse controls.
 
-Further content is not pre-committed.
+Possible later work:
+- backend/API;
+- database;
+- Telegram identity validation;
+- cloud SaveProvider;
+- leaderboard service;
+- anti-cheat/plausibility validation;
+- monetization.
 
-## Phase 7 — Release Quality
-### S30 — Sound
-### S31 — VFX / Juice
-### S32 — Performance
-### S33 — Mobile Compatibility
-### S34 — Analytics
-### S35 — Telegram Production Integration
-### S36 — Closed Beta
-### S37 — Release Candidate
-
-## Backlog beyond initial roadmap
+## Backlog
 - Sprint / Race mode;
 - Time Attack;
 - Challenge Run;
 - dedicated Boss Hunt mode;
 - real-world rewards;
-- monetization;
-- premium season;
-- Telegram Stars;
 - EN locale;
 - seasons;
-- white-label architecture;
 - more biomes;
-- special campaigns.
+- white-label/licensing model.
 
 ## Quality gates
-### Gate A — Technical viability
-After S01:
-- engine selected;
-- Telegram launch proven;
+### Gate A — Technical viability (after S01)
+- engine selected from evidence;
+- static browser build proven;
 - mobile performance acceptable;
-- payload/loading risks understood.
+- startup/payload risks known.
 
-### Gate B — Core fun
-After S06:
-- control feels reliable;
-- failure is readable;
-- procedural generation is fair;
-- repeated short sessions are tolerable.
+### Gate B — Core fun (after S07)
+- swipe controls reliable;
+- generation fair;
+- Laziness pursuit readable;
+- repeated short sessions feel acceptable.
 
-### Gate C — Differentiation
-After S11:
-- Laziness pursuit is memorable;
-- reversal/Boss concept works;
+### Gate C — Differentiation (after S12)
+- pursuit/reversal is memorable;
 - power-ups/events reduce monotony;
-- game does not feel like a reskinned clone.
+- game does not feel like a generic reskin.
 
-### Gate D — Persistence
-After S14:
-- Telegram user returns to saved state;
-- run rewards cannot be duplicated through simple retries;
-- valuable state is server-side.
+### Gate D — Local progression (after S18)
+- browser reload does not lose normal progress;
+- save schema can evolve;
+- reset/recovery path exists.
 
-### Gate E — Retention
-After S25:
-- at least one meaningful reason exists to return daily/weekly;
-- social loop works without spammy UX.
+### Gate E — Browser release (after S33)
+- URL launch works;
+- supported mobile matrix passes;
+- performance/startup acceptable;
+- no progress-loss blockers.
 
-### Gate F — Release
-After S37:
-- supported device matrix passes;
-- startup/performance acceptable;
-- no progression-loss blockers;
-- Telegram production flow proven.
+### Gate F — Telegram release (after S37)
+- same build runs correctly inside Telegram WebView;
+- safe areas/back/fullscreen behavior verified;
+- existing bot launch flow proven.

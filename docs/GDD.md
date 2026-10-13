@@ -1,23 +1,25 @@
-# Game Design Document — v0.1
+# Game Design Document — v0.2
 
 ## 1. Product statement
-NOXY: Победи Лень is a Telegram Mini App game for Noxygen. It combines a stylized 3D endless runner with meta-progression, cosmetics, missions, social competition and humorous reversal moments where the player stops escaping and starts hunting Laziness.
+NOXY: Победи Лень is a browser-first stylized 3D runner for Noxygen. The same web build is intended to be embedded into Telegram later as a Mini App.
+
+It combines an endless runner with meta-progression, cosmetics, missions and humorous reversal moments where the player stops escaping and starts hunting Laziness.
 
 The game must feel like a real game first and a branded product second.
 
 ## 2. Audience
 Primary launch audience:
-- existing Noxygen Telegram audience;
+- existing Noxygen audience;
 - clients already familiar with the brand.
 
 Secondary audience:
-- users reached through shares, challenges and social competition.
+- users reached through shared links/results and later Telegram distribution.
 
 The product should remain understandable to a user who knows nothing about Noxygen.
 
 ## 3. Platform and UX
-- Telegram Mini App.
-- Launched from the existing Noxygen bot.
+- Browser-first web game.
+- Telegram Mini App integration later, using the same hosted build.
 - Portrait 9:16.
 - Mobile-first.
 - RU first.
@@ -55,7 +57,7 @@ Tone may be deliberately absurd:
 3. Use power-ups and maintain combo.
 4. Finish or fail the run.
 5. Receive rewards.
-6. Improve account progression / hub / cosmetics / perks.
+6. Improve progression / hub / cosmetics / perks.
 7. Complete missions and achievements.
 8. Start the next run.
 
@@ -89,19 +91,12 @@ Conceptual states:
 3. Laziness almost catches the player.
 4. Caught / run ends.
 
-Mistakes reduce pursuit distance.
-Positive mechanics may restore distance.
-Shield may absorb a mistake.
+Mistakes reduce pursuit distance. Positive mechanics may restore distance. Shield may absorb a mistake.
 
 ### 6.3 Near Miss / Combo
 Passing dangerously close to an obstacle can award a Near Miss / PERFECT event.
 
-Combos increase rewards/score:
-- x2;
-- x3;
-- x4;
-- x5;
-- future tuning allowed.
+Combos increase rewards/score, e.g. x2 -> x3 -> x4 -> x5. Exact tuning is deferred.
 
 This mechanic should create a risk/reward skill layer beyond simple lane switching.
 
@@ -132,18 +127,15 @@ Events should interrupt monotony without destroying readability.
 ## 9. Boss Run
 A signature reversal sequence.
 
-Trigger example:
-"ЛЕНЬ ОБНАРУЖЕНА"
+Trigger example: "ЛЕНЬ ОБНАРУЖЕНА".
 
-Boss sequence goals:
+Goals:
 - Laziness is in front of the player;
 - player must close the distance;
 - special obstacle patterns may appear;
 - power-ups may be used;
 - successful chase gives elevated rewards;
-- finish may include comedic victory animation such as kicking the sofa away.
-
-Boss Run is not required for the first technical spike but is a planned signature feature.
+- finish may include a comedic victory animation such as kicking the sofa away.
 
 ## 10. Character and customization
 Male and female playable characters are required from the first playable release.
@@ -166,7 +158,6 @@ Long-term cosmetic categories:
 - glasses;
 - watches/accessories;
 - trails;
-- boards/rideables if added;
 - profile decoration;
 - special effects.
 
@@ -183,8 +174,6 @@ Progression concept:
 - gym;
 - advanced gym;
 - NOXY Lab / premium advanced space.
-
-The hub provides visible long-term progress.
 
 ### 11.2 Perks
 Prefer behavior-changing perks over flat stat percentages.
@@ -203,20 +192,7 @@ Players should eventually choose a limited subset before a run.
 Two currencies from the beginning.
 
 ### 12.1 NX
-Common currency.
-
-Potential sources:
-- run distance;
-- pickups;
-- combo;
-- missions;
-- random events.
-
-Potential sinks:
-- standard cosmetics;
-- common unlocks;
-- hub progression;
-- selected perk unlocks.
+Common currency from runs, pickups, combo, missions and events. Potential sinks: standard cosmetics, common unlocks, hub progression and selected perk unlocks.
 
 ### 12.2 Rare currency
 Working name: NOXY Crystal.
@@ -231,28 +207,30 @@ Potential sources:
 The rare currency is not monetized in v1.
 
 ## 13. Retention
-Planned systems:
+Initial local-first retention systems:
 - daily missions;
 - weekly missions;
 - daily rewards;
 - achievements;
-- weekly leaderboard;
-- friend leaderboard/challenges;
-- limited future events.
+- local records;
+- shareable result cards/links where useful.
+
+Trusted global/friend leaderboards are deferred until an online service exists.
 
 No artificial playtime restriction.
 
-## 14. Social
-Telegram is part of the product loop.
+## 14. Social / Telegram
+Telegram is a future distribution and platform-integration layer, not a dependency for the core game.
 
-Planned concepts:
-- global leaderboard;
-- weekly leaderboard;
-- friend leaderboard where technically practical;
-- shareable challenge result;
-- "побить результат" deep-link flow.
+Later concepts:
+- bot menu launch;
+- Telegram fullscreen/safe-area behavior;
+- haptics;
+- shareable challenge flow;
+- user context;
+- global/friend leaderboards only if backend services are introduced.
 
-Exact implementation will be designed after the Telegram spike.
+The browser game must remain playable without Telegram.
 
 ## 15. Brand integration
 Noxygen presence should be noticeable but not turn the world into a branded theme park.
@@ -275,12 +253,12 @@ v1:
 - no banner ads;
 - no stamina sales.
 
-Future business options are deliberately left open:
+Future business options remain open:
 - cosmetics;
 - premium seasons;
 - Telegram Stars;
 - paid branded content/seasons;
-- white-label licensing to other brands;
+- white-label licensing;
 - sponsorship;
 - physical purchase -> cosmetic code.
 
@@ -295,41 +273,29 @@ Possible later additions:
 - gifts;
 - event prizes.
 
-Any real-world reward mechanic requires separate legal/product review.
+Any real-world reward mechanic requires separate legal/product review and likely trusted server-side state.
 
 ## 18. Language
 First release language: Russian.
 
-All user-facing text must use localization keys rather than being hard-coded into scenes/gameplay code where avoidable.
+All user-facing text should use localization keys rather than hard-coded scene/gameplay strings where avoidable.
 
-English and other locales are backlog items.
+## 19. Connectivity and saves
+Initial product is local-first and must be playable without account registration.
 
-## 19. Connectivity
-- Online account/sync is required.
-- Temporary connection loss during a run must not immediately invalidate the run.
-- Important progress is synchronized server-side.
-- Local storage may hold settings/cache/non-authoritative state.
+- Internet is needed only to load the hosted web build; the first architecture does not require a live backend session.
+- Progress is stored locally, primarily through IndexedDB behind a SaveProvider abstraction.
+- Reload/restart should preserve normal progress.
+- Cross-device sync is not promised in v1.
+- Clearing site data or switching browsers/devices may lose local progress; this limitation is acceptable for the initial product.
+- A later ServerSaveProvider may add cloud sync without rewriting gameplay systems.
 
-## 20. Anti-cheat philosophy
-The server will not simulate every run.
+## 20. Competitive integrity / anti-cheat
+There is no meaningful anti-cheat promise in the local-first phase.
 
-The client executes gameplay and submits a run summary.
+Browser state is user-controlled. That is acceptable while rewards are purely in-game and leaderboards/real-value rewards are absent.
 
-Server checks should reject obviously impossible results and protect valuable account state.
-
-Example run result fields:
-- run_id;
-- mode;
-- distance;
-- duration;
-- score;
-- NX earned;
-- rare currency earned;
-- power-ups;
-- event summary;
-- client version.
-
-Anti-cheat sophistication may grow with actual abuse risk.
+If trusted competition, real-world rewards or payments are introduced, server-side identity/state/result validation becomes a separate approved phase.
 
 ## 21. Deferred decisions
 Not fixed yet:
@@ -340,6 +306,7 @@ Not fixed yet:
 - number of launch biomes;
 - final hub upgrade tree;
 - final monetization model;
-- real-world rewards.
+- real-world rewards;
+- online services/backend technology.
 
-These must not block the technical foundation.
+These must not block the browser game foundation.

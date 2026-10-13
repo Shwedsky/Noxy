@@ -1,7 +1,7 @@
 # AGENTS.md
 
 ## Purpose
-This repository is developed incrementally with AI coding agents, primarily Codex.
+This repository is developed incrementally with AI assistance. ChatGPT owns planning/review/repository coordination by default. Codex is used selectively for implementation-heavy work that benefits from a real checkout, build tools and local runtime execution.
 
 Agents must optimize for a working, reviewable game rather than maximum code volume.
 
@@ -11,9 +11,11 @@ Read before implementation:
 2. docs/GDD.md
 3. docs/ARCHITECTURE.md
 4. docs/ROADMAP.md
-5. the active spec in specs/
+5. docs/TOOLING.md
+6. docs/DELIVERY_OWNERSHIP.md
+7. the active spec in specs/
 
-If a spec conflicts with an older general document, stop and report the conflict unless the spec explicitly says it supersedes that decision.
+If a spec conflicts with an older general document, report the conflict unless the spec explicitly supersedes that decision.
 
 ## Scope discipline
 - Implement only the active spec and required enabling changes.
@@ -24,29 +26,31 @@ If a spec conflicts with an older general document, stop and report the conflict
 
 ## Product rules
 - Portrait 9:16.
-- Mobile-first.
-- Telegram Mini App target.
+- Browser-first and mobile-first.
+- Telegram is a later integration target using the same web build.
 - Swipe input.
 - No stamina.
 - No ads.
 - No monetization in v1.
 - RU first, localization-ready.
 - Noxygen branding noticeable but game quality comes first.
-- Real medical claims must not be invented from game power-up behavior.
+- Do not invent medical claims from game power-up behavior.
 
 ## Architecture rules
 - Final engine is NOT selected until S01 is complete.
-- Valuable persistent state is server-authoritative.
-- Do not put Telegram bot secrets or backend credentials in client code.
-- Do not trust client identity or reward amounts.
-- Keep mode-specific rules separable enough to support future non-Endless modes.
+- No backend, database, auth or Docker stack unless an approved spec explicitly introduces them.
+- v1 persistence is local-first behind `ISaveProvider`.
+- Prefer IndexedDB for game state; localStorage only for tiny non-critical settings.
+- Keep browser/Telegram differences behind platform adapters.
+- Core gameplay must not directly depend on Telegram APIs.
+- Keep mode-specific rules separable enough for future non-Endless modes.
 - Favor data-driven gameplay content where it clearly reduces iteration cost.
 
 ## Quality rules
 For every implementation spec:
 - state what changed;
 - state what was not implemented;
-- list tests/checks run;
+- list tests/checks actually run;
 - list known limitations;
 - include exact commands needed to reproduce checks.
 
@@ -74,22 +78,23 @@ Avoid:
 Before adding a major dependency:
 - explain why it is needed;
 - prefer maintained libraries;
-- avoid adding overlapping libraries for the same concern.
+- avoid overlapping libraries for the same concern.
 
 ## Git
 Preferred branch pattern:
-- feature/sXX-short-name
-- fix/short-name
+- `feature/sXX-short-name`
+- `fix/short-name`
+- `docs/short-name`
 
 Commit messages should identify the spec where practical.
 
 Do not force-push main.
+Do not merge a PR until checks and review for that task are complete.
 
 ## Definition of done
-A spec is not done merely because code exists.
-
-It is done only when:
+A spec is done only when:
 - acceptance criteria are met;
 - documented checks pass or unsupported checks are explicitly reported;
 - no known blocker contradicts the acceptance criteria;
-- documentation is updated when the implementation changes a recorded decision.
+- documentation is updated when implementation changes a recorded decision;
+- owner-visible gameplay changes have concrete manual verification steps.
